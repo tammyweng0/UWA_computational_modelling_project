@@ -1,3 +1,7 @@
+'''
+HOW the simulation works
+'''
+
 import networkx as nx
 import random
 
@@ -5,6 +9,12 @@ import random
 def create_network(num_customers, network_type):
     """
     Create the customer social network.
+    """
+    pass
+
+def select_influencer(...):
+    """
+    Select which customer is the influencer
     """
     pass
 

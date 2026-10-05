@@ -7,7 +7,7 @@
 
 # Concept of the project
 
-> How does influencer position within a consumer social network affect the adoption of a new fashion product?
+> How do influencer position and social influence strength affect the adoption of a new fashion product within a consumer social network?
 
 # Workflow
 
