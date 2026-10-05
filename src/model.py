@@ -6,15 +6,37 @@ import networkx as nx
 import random
 
 
-def create_network(num_customers, network_type):
+def create_network(num_customers, edges_per_new_node):
     """
-    Create the customer social network.
-    """
-    pass
+    Create a consumer social network using the
+    Barabasi-Albert preferential attachment model.
 
-def select_influencer(...):
+    Parameters
+    ----------
+    num_customers : int
+        Number of consumers in the network.
+
+    edges_per_new_node : int
+        Number of edges created by each new node.
+
+    Returns
+    -------
+    G : networkx.Graph
+        The generated consumer social network.
     """
-    Select which customer is the influencer
+
+    G = nx.barabasi_albert_graph(
+        num_customers,
+        edges_per_new_node
+    )
+
+    return G
+    
+
+def select_influencer(G, strategy):
+    """
+    Select a customer as the influencer based on the
+    specified influencer strategy.
     """
     pass
 
@@ -42,7 +64,8 @@ def simulation_step(G, social_influence):
 
 def run_simulation(
     num_customers,
-    network_type,
+    edges_per_new_node,
+    influencer_strategy,
     social_influence,
     max_steps
 ):
