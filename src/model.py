@@ -8,8 +8,7 @@ import random
 
 def create_network(num_customers, edges_per_new_node):
     """
-    Create a consumer social network using the
-    Barabasi-Albert preferential attachment model.
+    Create a consumer social network using the Barabasi-Albert preferential attachment model.
 
     Parameters
     ----------
@@ -35,10 +34,48 @@ def create_network(num_customers, edges_per_new_node):
 
 def select_influencer(G, strategy):
     """
-    Select a customer as the influencer based on the
-    specified influencer strategy.
+    Select a customer as the influencer based on their position in the social network.
+
+    Parameters
+    ----------
+    G : networkx.Graph
+        The customer social network.
+
+    strategy : str
+        Strategy used to select the influencer.
+
+    Returns
+    -------
+    influencer : int
+        Node ID of the selected influencer.
     """
-    pass
+
+    degrees = dict(G.degree())
+
+    if strategy == "central":
+        influencer = max(
+            degrees,
+            key=degrees.get
+        )
+
+    elif strategy == "less_central":
+        # Sort customers from lowest to highest degree
+        ranked_customers = sorted(
+            degrees,
+            key=degrees.get
+        )
+
+        # Select customer around the 25th percentile
+        index = len(ranked_customers) // 4
+
+        influencer = ranked_customers[index]
+
+    else:
+        raise ValueError(
+            "strategy must be 'central' or 'less_central'"
+        )
+
+    return influencer
 
 
 def initialise_customers(G):
