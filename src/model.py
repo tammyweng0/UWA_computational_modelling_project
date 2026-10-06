@@ -58,6 +58,23 @@ def select_influencer(G, strategy):
             key=degrees.get
         )
 
+    elif strategy == "less_central":
+        # Sort customers from lowest to highest degree
+        ranked_customers = sorted(
+            degrees,
+            key=degrees.get
+        )
+
+        # Select customer around the 25th percentile
+        index = len(ranked_customers) // 4
+
+        influencer = ranked_customers[index]
+
+    else:
+        raise ValueError(
+            "strategy must be 'central' or 'less_central'"
+        )
+
     return influencer
 
 
