@@ -186,6 +186,75 @@ def run_simulation(
     max_steps
 ):
     """
-    Run the complete simulation.
+    Run the complete fashion product adoption simulation.
+
+    Parameters
+    ----------
+    num_customers : int
+        Number of customers in the network.
+
+    edges_per_new_node : int
+        Number of edges created by each new node
+        in the Barabasi-Albert network.
+
+    influencer_strategy : str
+        Strategy used to select the influencer:
+        "central" or "less_central".
+
+    social_influence : float
+        Strength of social influence.
+
+    max_steps : int
+        Maximum number of simulation steps.
+
+    Returns
+    -------
+    G : networkx.Graph
+        Final state of the customer network.
+
+    adoption_history : list
+        Total number of customers who have purchased
+        at each time step.
     """
-    pass
+
+    # 1. Create the customer social network
+    G = create_network(
+        num_customers,
+        edges_per_new_node
+    )
+
+    # 2. Select the influencer
+    influencer = select_influencer(
+        G,
+        influencer_strategy
+    )
+
+    # 3. Initialise customers
+    initialise_customers(
+        G,
+        influencer
+    )
+
+    # 4. Record initial adoption
+    adoption_history = [1]
+
+    # 5. Run the simulation
+    for step in range(max_steps):
+
+        new_purchases = simulation_step(
+            G,
+            social_influence
+        )
+
+        total_purchased = sum(
+            G.nodes[customer]["purchased"]
+            for customer in G.nodes()
+        )
+
+        adoption_history.append(total_purchased)
+
+        # Stop if everyone has purchased
+        if total_purchased == num_customers:
+            break
+
+    return G, adoption_history
