@@ -6,7 +6,7 @@ import networkx as nx
 import random
 
 
-def create_network(num_customers, edges_per_new_node):
+def create_network(num_customers, edges_per_new_node, seed=None):
     """
     Create a consumer social network using the Barabasi-Albert preferential attachment model.
 
@@ -26,7 +26,8 @@ def create_network(num_customers, edges_per_new_node):
 
     G = nx.barabasi_albert_graph(
         num_customers,
-        edges_per_new_node
+        edges_per_new_node,
+        seed=seed
     )
 
     return G
@@ -65,8 +66,8 @@ def select_influencer(G, strategy):
             key=degrees.get
         )
 
-        # Select customer around the 25th percentile
-        index = len(ranked_customers) // 4
+        # Select customer in median degree.
+        index = len(ranked_customers) // 2
 
         influencer = ranked_customers[index]
 
@@ -78,17 +79,19 @@ def select_influencer(G, strategy):
     return influencer
 
 
-def initialise_customers(G, influencer):
+def initialise_customers(G, influencer, rng=None):
     """
     Initialise customer purchase states and
     individual baseline purchase probabilities.
     """
+    if rng is None:
+        rng = random
 
     for customer in G.nodes():
         G.nodes[customer]["purchased"] = False
 
         G.nodes[customer]["baseline_probability"] = (
-            random.uniform(0.01, 0.10)
+            rng.uniform(0.01, 0.10)
         )
 
     G.nodes[influencer]["purchased"] = True
@@ -130,7 +133,7 @@ def purchase_probability(
     return probability
 
 
-def simulation_step(G, social_influence):
+def simulation_step(G, social_influence, rng=None):
     """
     Perform one time step of the simulation.
 
@@ -150,6 +153,8 @@ def simulation_step(G, social_influence):
     new_purchases : list
         Customers who purchased during this time step.
     """
+    if rng is None:
+        rng = random
 
     new_purchases = []
 
@@ -165,7 +170,7 @@ def simulation_step(G, social_influence):
             social_influence
         )
 
-        random_number = random.random()
+        random_number = rng.random()
 
         if random_number < probability:
             new_purchases.append(customer)
@@ -177,7 +182,66 @@ def simulation_step(G, social_influence):
 
     return new_purchases
 
+def run_simulation(
+    num_customers,
+    edges_per_new_node,
+    influencer_strategy,
+    social_influence,
+    max_steps,
+    seed=None
+):
+    # Create separate random generators
+    baseline_rng = random.Random(seed)
+    purchase_rng = random.Random(seed)
 
+    # Create network
+    G = create_network(
+        num_customers,
+        edges_per_new_node,
+        seed=seed
+    )
+
+    # Select influencer
+    influencer = select_influencer(
+        G,
+        influencer_strategy
+    )
+
+    # Initialise customers
+    initialise_customers(
+        G,
+        influencer,
+        rng=baseline_rng
+    )
+
+    adoption_history = [1]
+
+    # Run simulation
+    for step in range(max_steps):
+
+        new_purchases = simulation_step(
+            G,
+            social_influence,
+            rng=purchase_rng
+        )
+
+        total_purchased = sum(
+            G.nodes[customer]["purchased"]
+            for customer in G.nodes()
+        )
+
+        adoption_history.append(
+            total_purchased
+        )
+
+        if total_purchased == num_customers:
+            break
+
+    return G, adoption_history
+
+
+
+'''
 def run_simulation(
     num_customers,
     edges_per_new_node,
@@ -258,3 +322,4 @@ def run_simulation(
             break
 
     return G, adoption_history
+'''
