@@ -65,8 +65,8 @@ def select_influencer(G, strategy):
             key=degrees.get
         )
 
-        # Select customer around the 25th percentile
-        index = len(ranked_customers) // 4
+        # Select customer in median degree.
+        index = len(ranked_customers) // 2
 
         influencer = ranked_customers[index]
 
