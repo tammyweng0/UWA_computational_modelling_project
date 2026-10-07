@@ -133,8 +133,49 @@ def purchase_probability(
 def simulation_step(G, social_influence):
     """
     Perform one time step of the simulation.
+
+    Customers who have not yet purchased decide whether
+    to purchase based on their purchase probability.
+
+    Parameters
+    ----------
+    G : networkx.Graph
+        The customer social network.
+
+    social_influence : float
+        Strength of social influence.
+
+    Returns
+    -------
+    new_purchases : list
+        Customers who purchased during this time step.
     """
-    pass
+
+    new_purchases = []
+
+    for customer in G.nodes():
+
+        # Skip customers who already purchased
+        if G.nodes[customer]["purchased"]:
+            continue
+
+        probability = purchase_probability(
+            G,
+            customer,
+            social_influence
+        )
+
+        random_number = random.random()
+
+        if random_number < probability:
+            new_purchases.append(customer)
+
+    # Update purchase states after all customers
+    # have made their decisions
+    for customer in new_purchases:
+        G.nodes[customer]["purchased"] = True
+
+    return new_purchases
 
 
 def run_simulation(
@@ -145,6 +186,75 @@ def run_simulation(
     max_steps
 ):
     """
-    Run the complete simulation.
+    Run the complete fashion product adoption simulation.
+
+    Parameters
+    ----------
+    num_customers : int
+        Number of customers in the network.
+
+    edges_per_new_node : int
+        Number of edges created by each new node
+        in the Barabasi-Albert network.
+
+    influencer_strategy : str
+        Strategy used to select the influencer:
+        "central" or "less_central".
+
+    social_influence : float
+        Strength of social influence.
+
+    max_steps : int
+        Maximum number of simulation steps.
+
+    Returns
+    -------
+    G : networkx.Graph
+        Final state of the customer network.
+
+    adoption_history : list
+        Total number of customers who have purchased
+        at each time step.
     """
-    pass
+
+    # 1. Create the customer social network
+    G = create_network(
+        num_customers,
+        edges_per_new_node
+    )
+
+    # 2. Select the influencer
+    influencer = select_influencer(
+        G,
+        influencer_strategy
+    )
+
+    # 3. Initialise customers
+    initialise_customers(
+        G,
+        influencer
+    )
+
+    # 4. Record initial adoption
+    adoption_history = [1]
+
+    # 5. Run the simulation
+    for step in range(max_steps):
+
+        new_purchases = simulation_step(
+            G,
+            social_influence
+        )
+
+        total_purchased = sum(
+            G.nodes[customer]["purchased"]
+            for customer in G.nodes()
+        )
+
+        adoption_history.append(total_purchased)
+
+        # Stop if everyone has purchased
+        if total_purchased == num_customers:
+            break
+
+    return G, adoption_history
