@@ -102,11 +102,37 @@ def initialise_customers(G, influencer):
     G.nodes[influencer]["purchased"] = True
 
 
-def purchase_probability(G, customer, social_influence):
+def purchase_probability(
+    G,
+    customer,
+    social_influence,
+    baseline_probability=0.05
+):
     """
-    Calculate a customer's probability of purchasing.
+    Calculate a customer's probability of purchasing
+    based on the purchase behaviour of their neighbours.
     """
-    pass
+
+    neighbours = list(G.neighbors(customer))
+
+    purchased_neighbours = 0
+
+    for neighbour in neighbours:
+        if G.nodes[neighbour]["purchased"]:
+            purchased_neighbours += 1
+
+    fraction_purchased = (
+        purchased_neighbours / len(neighbours)
+    )
+
+    probability = (
+        baseline_probability
+        + social_influence * fraction_purchased
+    )
+
+    probability = min(1.0, probability)
+
+    return probability
 
 
 def simulation_step(G, social_influence):
