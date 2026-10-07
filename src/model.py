@@ -78,11 +78,28 @@ def select_influencer(G, strategy):
     return influencer
 
 
-def initialise_customers(G):
+def initialise_customers(G, influencer):
     """
-    Give each customer an initial purchase state.
+    Initialise the purchase state of all customers.
+
+    All customers start without purchasing the product,
+    except the selected influencer.
+
+    Parameters
+    ----------
+    G : networkx.Graph
+        The customer social network.
+
+    influencer : int
+        Node ID of the selected influencer.
     """
-    pass
+
+    # Initially, nobody has purchased the product
+    for customer in G.nodes():
+        G.nodes[customer]["purchased"] = False
+
+    # The influencer starts with the product
+    G.nodes[influencer]["purchased"] = True
 
 
 def purchase_probability(G, customer, social_influence):
