@@ -133,26 +133,11 @@ def purchase_probability(
     return probability
 
 
-def simulation_step(G, social_influence, rng=None):
-    """
-    Perform one time step of the simulation.
-
-    Customers who have not yet purchased decide whether
-    to purchase based on their purchase probability.
-
-    Parameters
-    ----------
-    G : networkx.Graph
-        The customer social network.
-
-    social_influence : float
-        Strength of social influence.
-
-    Returns
-    -------
-    new_purchases : list
-        Customers who purchased during this time step.
-    """
+def simulation_step(
+    G,
+    social_influence,
+    rng=None
+):
     if rng is None:
         rng = random
 
@@ -160,7 +145,10 @@ def simulation_step(G, social_influence, rng=None):
 
     for customer in G.nodes():
 
-        # Skip customers who already purchased
+        # Generate a random number for every customer
+        random_number = rng.random()
+
+        # Skip customers who have already purchased
         if G.nodes[customer]["purchased"]:
             continue
 
@@ -170,17 +158,17 @@ def simulation_step(G, social_influence, rng=None):
             social_influence
         )
 
-        random_number = rng.random()
-
         if random_number < probability:
             new_purchases.append(customer)
 
-    # Update purchase states after all customers
-    # have made their decisions
+    # Apply all purchases after decisions are made
     for customer in new_purchases:
         G.nodes[customer]["purchased"] = True
 
     return new_purchases
+
+
+
 
 def run_simulation(
     num_customers,
