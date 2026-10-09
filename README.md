@@ -60,7 +60,12 @@ Compares cumulative adoption trajectories for central and less-central influence
 
 ### Model validation
 
-The notebook checks reproducibility with fixed random seeds, non-decreasing cumulative adoption, valid purchase probabilities, correct initial conditions, and adoption counts within the population size.
+The implementation includes five validation checks to confirm that the simulation follows the intended model rules:
+1. **Reproducibility** —  Random seeds and parameter values should give the same adoption results if they are used in simulations.
+2. **Irreversible adoption** — Consumers never stop being consumers after buying the product, so the cumulative adoption rate shouldn't be reduced.
+3. **Probability bounds** — The probabilities of purchase calculated should be between 0 and 1.
+4. **Initial conditions** — Each simulation needs to start with one initial adopter.
+5. **Population bounds** — No more adopters should be connected than there are consumers.
 
 ## Main findings
 
