@@ -67,6 +67,21 @@ The implementation includes five validation checks to confirm that the simulatio
 4. **Initial conditions** — Each simulation needs to start with one initial adopter.
 5. **Population bounds** — No more adopters should be connected than there are consumers.
 
+### Reproducibility and consistency
+
+The final project configuration was cross-checked against the experiment notebook and report.
+
+The main experimental settings are:
+
+- Population size: `N = 100`
+- BA network parameter: `m = 3`
+- Simulation duration: `28 days`
+- Repetitions per condition: `50`
+- Social influence strengths: `0, 0.025, 0.050, 0.075, 0.100`
+- Influencer strategies: `central` and `less-central`
+
+The README, notebook and report use the same model assumptions and experimental settings.
+
 ## Main findings
 
 Within the simulated network:
