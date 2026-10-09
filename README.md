@@ -138,6 +138,7 @@ The main experiment uses 50 repetitions per condition, with seeds **0–49** for
 ## Contributors
 
 - Yu Ting Weng (`tammyweng0`) 24622994
+- Zhiyuan Cheng (`OwenCzy1`)  24969029
 
 ## Further details
 
